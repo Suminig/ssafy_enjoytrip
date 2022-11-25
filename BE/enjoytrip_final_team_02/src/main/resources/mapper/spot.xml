@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.enjoytrip.spot.model.mapper.SpotMapper">
+	<select id="getSidoList" resultType="map">
+		select sidoid, replace(name, '\r', '') as name 
+		from sido
+	</select>
+	
+	<select id="getGugunList" parameterType="int" resultType="map">
+		select gugunid, replace(name, '\r', '') as name 
+		from gugun
+		where sidoid = #{sidoid}
+	</select>
+	
+	<select id="getSpotList" parameterType="map" resultType="Spot">
+		select spotid, title, address, hit, theme, image, lat, lang
+		from spot
+		where sidoid = #{sidoid} and gugunid = #{gugunid}
+	</select>
+	
+	<select id="getSpot" parameterType="int" resultType="Spot">
+		select s.spotid, s.title, s.tel, s.address, s.theme, s.image, s.lat, s.lang, d.`desc`
+		from spot s, description d
+		where s.spotid = #{spotid} and s.contentid = d.contentid
+	</select>
+	
+	<select id="searchSpot" parameterType="string" resultType="Spot">
+		select spotid, title, address, theme, image, lat, lang
+		from spot
+		where title like concat('%', #{keyword}, '%') and theme != 25 and (lang between 124 and 132) and (lat between 33 and 43)
+		order by hit desc
+	</select>
+	
+	<select id="getThemeTopSpot" parameterType="string" resultType="Spot">
+		select s.spotid, s.title, s.tel, s.address, s.theme, s.image, s.lat, s.lang, d.`desc`
+		from spot s left join description d
+		on s.contentid = d.contentid 
+		where s.theme = #{theme}
+		order by hit desc 
+		limit 1
+	</select>
+</mapper>

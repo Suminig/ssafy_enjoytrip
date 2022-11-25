@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.ssafy.enjoytrip.hotplace.model.mapper.HotplaceMapper">
+
+	<select id="getHotplace" parameterType="int" resultType="Hotplace">
+		select hotplaceid, uid, title, image, `desc`
+		from hotplace
+		where hotplaceid = #{hotplaceid}
+	</select>
+	
+	<select id="listHotplace" resultType="Hotplace">
+		select h.hotplaceid, u.uid,
+		h.title, h.image, h.`desc`, u.id as userid
+		from hotplace as h join user
+		as u
+		on h.uid = u.uid
+	</select>
+
+	<select id="listRecentHotplace" resultType="Hotplace">
+		select h.hotplaceid,
+		u.uid, h.title, h.image, h.`desc`, u.id as userid
+		from hotplace as h
+		join
+		user as u
+		on h.uid = u.uid
+		order by h.hotplaceid desc
+		limit 12
+	</select>
+
+	<insert id="writeHotplace" parameterType="Hotplace">
+		insert into hotplace
+		(uid, title, image, `desc`)
+		values (#{uid}, #{title}, #{image},
+		#{desc})
+	</insert>
+
+	<update id="modifyHotplace" parameterType="map">
+		update hotplace
+		set title = #{title}, `desc` = #{desc}
+		where hotplaceid = #{hotplaceid}
+	</update>
+
+	<delete id="deleteHotplace" parameterType="int">
+		delete from hotplace
+		where hotplaceid = #{hotplaceid}
+	</delete>
+</mapper>

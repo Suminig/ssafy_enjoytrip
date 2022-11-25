@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.ssafy.enjoytrip.board.model.mapper.BoardMapper">
+	<select id="getBoard" parameterType="int" resultType="Board">
+		select b.boardid, u.uid, b.title, b.content, u.name as author, b.date, b.hit, u.image as profileImg
+		from board as b join user as u on b.uid = u.uid
+		where b.boardid = #{boardid} 
+	</select>
+	
+	<select id="getTopBoards" resultType="Board">
+		select b.boardid, u.uid, b.title, b.content, u.name as author, b.date, b.hit
+		from board as b join user as u on b.uid = u.uid
+		order by b.hit desc
+		limit 6;
+	</select>
+	
+	<select id="getTopBoardSpots" parameterType="int" resultType="map">
+		select ss.spotid, s.title, s.image
+		from schedulespot as ss join spot as s
+		on ss.spotid = s.spotid
+		where ss.boardid = #{boardid};
+	</select>
+	
+	<select id="listBoard" parameterType="map" resultType="Board">
+		select b.boardid, u.uid, u.name as author, b.title, b.content, date_format(b.date, '%Y.%m.%d') as date, b.hit, u.image as profileImg
+		from board as b join user as u
+		on b.uid = u.uid
+		order by b.boardid desc
+	</select>
+
+	<select id="getLastBoardid" parameterType="int" resultType="int">
+		select boardid 
+		from board
+		where uid = #{uid}
+		order by boardid desc 
+		limit 1
+	</select>
+	
+	<select id="getSpots" parameterType="int" resultType="map">
+		select ss.ssid, ss.spotid, ss.memo, s.title, s.address, s.theme
+		from schedulespot as ss join spot as s
+		on ss.spotid = s.spotid
+		where ss.boardid = #{boardid};
+	</select>
+	
+	<insert id="writeBoard" parameterType="map">
+		insert into board (uid, title, content)
+		values (#{uid}, #{title}, #{content})
+	</insert>
+	
+	<insert id="writeScheduleSpot" parameterType="map">
+		insert into schedulespot (boardid, spotid, memo)
+		values (#{boardid}, #{spotid}, #{memo})
+	</insert>
+	
+	<update id="updateBoardHit" parameterType="int">
+		update board
+		set hit = hit + 1
+		where boardid = #{boardid}
+	</update>
+	
+	<delete id="deleteBoard" parameterType="int">
+		delete from board
+		where boardid = #{boardid}
+	</delete>
+	
+	<delete id="deleteSpots" parameterType="int">
+		delete from schedulespot
+		where boardid = #{boardid}
+	</delete>
+	
+	<update id="modifyBoard" parameterType="map">
+		update board 
+		set title = #{title}, content = #{content}
+		where boardid = ${boardid}
+	</update>
+	
+	<update id="modifySpots" parameterType="map">
+		update schedulespot
+		set memo = #{memo}
+		where ssid = #{ssid}
+	</update>
+</mapper>
