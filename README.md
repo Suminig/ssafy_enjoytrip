@@ -1,4 +1,4 @@
-# 관통_Final_PJT_EnjoyTrip
+# EnjoyTrip
 국내 관광지 정보와 여행 계획 및 여행지 정보를 공유하는 서비스입니다.
 
 ## 🧑‍🤝‍🧑 Team
